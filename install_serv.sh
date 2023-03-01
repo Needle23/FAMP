@@ -97,6 +97,22 @@ echo "
     </FilesMatch>
 </IfModule>" >> /usr/local/etc/apache24/modules.d/003_php-fpm.conf
 
+# Create configuration file for PHPINFO
+touch /usr/local/www/apache24/data/info.php
+
+# Add the configuration into the file
+echo "
+<?php
+
+// Show all information, defaults to INFO_ALL
+phpinfo();
+
+// Show just the module information.
+// phpinfo(8) yields identical results.
+phpinfo(INFO_MODULES);
+
+?>" >> /usr/local/www/apache24/data/info.php
+
 # Set the PHP's default configuration
 cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
