@@ -39,6 +39,7 @@ sysrc firewall_type="workstation"
 sysrc firewall_logdeny="YES"
 sysrc firewall_allowservices="any"
 
+
 # To enable services like remote SSH access or setting up a web server
 # uncommenting the following up will allow them when issuing this script.
 sysrc firewall_myservices="22/tcp 80/tcp 443/tcp"
@@ -116,7 +117,7 @@ phpinfo(INFO_MODULES);
 # Set the PHP's default configuration
 cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
-cd /usr/ports/databases/memcached ; nice -20 make install clean
+cd /usr/ports/databases/memcached ; nice -20 make BATCH=yes install clean
 sysrc memcached_enable="YES"
 service memcached start
 
