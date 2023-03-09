@@ -12,7 +12,7 @@ sed -ip 's/quarterly/latest/g' /etc/pkg/FreeBSD.conf
 pkg upgrade -y
 
 # Install Fail2ban
-pkg install -y py39-fail2ban
+pkg install -y py39-fail2ban wget nano
 
 # Enable the service to be started/stopped/restarted/etc
 sysrc fail2ban_enable="YES"
@@ -26,7 +26,7 @@ filter = sshd
 action = ipfw[name=SSH, port=ssh, protocol=tcp]
 logpath = /var/log/auth.log
 findtime = 600
-maxretry = 3
+maxretry = 2
 bantime = 604800" >> /usr/local/etc/fail2ban/jail.d/ssh-ipfw.local
 
 # Start the service
@@ -52,20 +52,20 @@ pkg install -y apache24
 sysrc apache24_enable="YES"
 
 # Install MariaDB 10.6
-pkg install -y mariadb106-server mariadb106-client
+pkg install -y mariadb105-server mariadb105-client
 
 # Add service to be fired up at boot time
 sysrc mysql_enable="YES"
 sysrc mysql_args="--bind-address=127.0.0.1"
 
 # Install PHP 8.2 and its 'funny' dependencies
-pkg install -y php82 php82-mysqli php82-extensions
+pkg install -y php82 php82-mysqli php82-mbstring php82-zlib php82-curl php82-gd php82-json php82-composer php82-extensions php82-hash php82-session php82-pdo_mysql
 
 # Install the 'old fashioned' Expect to automate the mysql_secure_installation part
 pkg install -y expect
 
 # Set a ServerName directive in Apache HTTP. Place a name to your server.
-sed -i -e 's/#ServerName www.example.com:80/ServerName California/g' /usr/local/etc/apache24/httpd.conf
+sed -i -e 's/#ServerName www.example.com:80/ServerName Russia/g' /usr/local/etc/apache24/httpd.conf
 
 # Configure Apache HTTP to use MPM Event instead of the Prefork default
 # 1.- Disable the Prefork MPM
@@ -225,41 +225,38 @@ sed -i '' -e '271i\
 service apache24 restart
 
 # Create the database and user. Mind this is MariaDB.
-pkg install -y pwgen
+#pkg install -y pwgen
 
-touch /root/new_db_name.txt
-touch /root/new_db_user_name.txt
-touch /root/newdb_pwd.txt
+#touch /root/new_db_name.txt
+#touch /root/new_db_user_name.txt
+#touch /root/newdb_pwd.txt
 
 # Create the database and user. 
-NEW_DB_NAME=$(pwgen 8 --secure --numerals --capitalize) && export NEW_DB_NAME && echo $NEW_DB_NAME >> /root/new_db_name.txt
+#NEW_DB_NAME=$(pwgen 8 --secure --numerals --capitalize) && export NEW_DB_NAME && echo $NEW_DB_NAME >> /root/new_db_name.txt
 
-NEW_DB_USER_NAME=$(pwgen 10 --secure --numerals --capitalize) && export NEW_DB_USER_NAME && echo $NEW_DB_USER_NAME >> /root/new_db_user_name.txt
+#NEW_DB_USER_NAME=$(pwgen 10 --secure --numerals --capitalize) && export NEW_DB_USER_NAME && echo $NEW_DB_USER_NAME >> /root/new_db_user_name.txt
 
-NEW_DB_PASSWORD=$(pwgen 32 --secure --numerals --capitalize) && export NEW_DB_PASSWORD && echo $NEW_DB_PASSWORD >> /root/newdb_pwd.txt
+#NEW_DB_PASSWORD=$(pwgen 32 --secure --numerals --capitalize) && export NEW_DB_PASSWORD && echo $NEW_DB_PASSWORD >> /root/newdb_pwd.txt
 
-NEW_DATABASE=$(expect -c "
-set timeout 10
-spawn mysql -u root -p
-expect \"Enter password:\"
-send \"\r\"
-expect \"root@localhost \[(none)\]>\"
-send \"CREATE DATABASE $NEW_DB_NAME;\r\"
-expect \"root@localhost \[(none)\]>\"
-send \"CREATE USER '$NEW_DB_USER_NAME'@'localhost' IDENTIFIED BY '$NEW_DB_PASSWORD';\r\"
-expect \"root@localhost \[(none)\]>\"
-send \"GRANT ALL PRIVILEGES ON $NEW_DB_NAME.* TO '$NEW_DB_USER_NAME'@'localhost';\r\"
-expect \"root@localhost \[(none)\]>\"
-send \"FLUSH PRIVILEGES;\r\"
-expect \"root@localhost \[(none)\]>\"
-send \"exit\r\"
-expect eof
-")
+#NEW_DATABASE=$(expect -c "
+#set timeout 10
+#spawn mysql -u root -p
+#expect \"Enter password:\"
+#send \"\r\"
+#expect \"root@localhost \[(none)\]>\"
+#send \"CREATE DATABASE $NEW_DB_NAME;\r\"
+#expect \"root@localhost \[(none)\]>\"
+#send \"CREATE USER '$NEW_DB_USER_NAME'@'localhost' IDENTIFIED BY '$NEW_DB_PASSWORD';\r\"
+#expect \"root@localhost \[(none)\]>\"
+#send \"GRANT ALL PRIVILEGES ON $NEW_DB_NAME.* TO '$NEW_DB_USER_NAME'@'localhost';\r\"
+#expect \"root@localhost \[(none)\]>\"
+#send \"FLUSH PRIVILEGES;\r\"
+#expect \"root@localhost \[(none)\]>\"
+#send \"exit\r\"
+#expect eof
+#")
 
-echo "$NEW_DATABASE"
-
-# Install the missing PHP packages
-pkg install -y php82-gd php82-mbstring php82-pdo_mysql
+#echo "$NEW_DATABASE"
 
 # Enable the use of .htaccess.
 sed -i '' -e '279s/AllowOverride None/AllowOverride All/g' /usr/local/etc/apache24/httpd.conf
@@ -277,15 +274,15 @@ service php-fpm restart
 service mysql-server restart
 
 # No one but root can read these files. Read only permissions.
-chmod 400 /root/new_db_name.txt
-chmod 400 /root/new_db_user_name.txt
-chmod 400 /root/newdb_pwd.txt
+#chmod 400 /root/new_db_name.txt
+#chmod 400 /root/new_db_user_name.txt
+#chmod 400 /root/newdb_pwd.txt
 
 # Display the new database, username and password generated on MySQL
-echo "Your DB_ROOT_PASSWORD is blank if you are root or a highly privileged user"
-echo "Your NEW_DB_NAME is written on this file /root/new_db_name.txt"
-echo "Your NEW_DB_USER_NAME is written on this file /root/new_db_user_name.txt"
-echo "Your NEW_DB_PASSWORD is written on this file /root/newdb_pwd.txt"
+#echo "Your DB_ROOT_PASSWORD is blank if you are root or a highly privileged user"
+#echo "Your NEW_DB_NAME is written on this file /root/new_db_name.txt"
+#echo "Your NEW_DB_USER_NAME is written on this file /root/new_db_user_name.txt"
+#echo "Your NEW_DB_PASSWORD is written on this file /root/newdb_pwd.txt"
 
 # Actions on the CLI are now finished.
 echo 'Actions on the CLI are now finished. Please visit the ip/domain of the site with a web browser and proceed with the final steps of install
