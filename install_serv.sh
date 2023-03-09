@@ -117,10 +117,6 @@ phpinfo(INFO_MODULES);
 # Set the PHP's default configuration
 cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 
-cd /usr/ports/databases/memcached ; nice -20 make BATCH=yes install clean
-sysrc memcached_enable="YES"
-service memcached start
-
 # Fire up the services
 service apache24 start
 service mysql-server start
