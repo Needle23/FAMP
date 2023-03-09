@@ -3,6 +3,32 @@
 # chmod +x SCRIPTNAME.sh
 # sudo ./SCRIPTNAME.sh
 #
+# SCRIPT: install_serv_apache.sh
+# DATE: 23-090-2019
+# SET FOR: Production
+# (For Alpha, Beta, Dev, Test and Production)
+#
+# PLATFORM: FreeBSD 12/13
+#
+# PURPOSE: This script installs a FAMP stack configured with Pre-fork MPM and mod_php.
+#
+# REV LIST:
+# DATE: 12-12-2021
+# MODIFICATION: 09-03-2023
+#
+#
+# set -n # Uncomment to check your syntax, without execution.
+# # NOTE: Do not forget to put the comment back in or
+# # the shell script will not execute!
+
+##########################################################
+################ BEGINNING OF MAIN #######################
+##########################################################
+#!/bin/sh
+# Instructions on how to use this script:
+# chmod +x SCRIPTNAME.sh
+# sudo ./SCRIPTNAME.sh
+#
 
 # Change the default pkg repository from quarterly to latest
 sed -ip 's/quarterly/latest/g' /etc/pkg/FreeBSD.conf
