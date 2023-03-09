@@ -104,14 +104,8 @@ touch /usr/local/www/apache24/data/info.php
 # Add the configuration into the file
 echo "
 <?php
-
-// Show all information, defaults to INFO_ALL
 phpinfo();
-
-// Show just the module information.
-// phpinfo(8) yields identical results.
 phpinfo(INFO_MODULES);
-
 ?>" >> /usr/local/www/apache24/data/info.php
 
 # Set the PHP's default configuration
