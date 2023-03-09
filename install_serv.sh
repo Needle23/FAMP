@@ -66,7 +66,7 @@ pkg install -y php82 php82-mysqli php82-mbstring php82-zlib php82-curl php82-gd 
 pkg install -y expect
 
 # Set a ServerName directive in Apache HTTP. Place a name to your server.
-sed -i -e 's/#ServerName www.example.com:80/ServerName Russia/g' /usr/local/etc/apache24/httpd.conf
+sed -i -e 's/#ServerName www.example.com:80/ServerName skireviewer/g' /usr/local/etc/apache24/httpd.conf
 
 # Configure Apache HTTP to use MPM Event instead of the Prefork default
 # 1.- Disable the Prefork MPM
